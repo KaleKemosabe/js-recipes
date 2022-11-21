@@ -30,10 +30,18 @@ const renderSpinner = function (parentEl) {
 
 const showRecipe = async function () {
   try {
+    // use slice to remove # from the beginning of the id so that it can be added into url
+    const id = window.location.hash.slice(1);
+    console.log(id);
+
+    // returns page without id --> one liner, no need for useless nesting
+    if (!id) return;
+
     // loading recipe
     renderSpinner(recipeContainer);
 
-    const res = await fetch('https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bcc40');
+    // add ${id}
+    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`);
     const data = await res.json();
 
     if (!res.ok) throw new Error(`${data.message} (${res.status})`);
@@ -147,4 +155,7 @@ const showRecipe = async function () {
   }
 };
 
-showRecipe();
+// window.addEventListener('hashchange', showRecipe);
+// window.addEventListener('load', showRecipe);
+// alternative way of doing
+['hashchange', 'load'].forEach(ev => window.addEventListener(ev, showRecipe));

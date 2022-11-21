@@ -561,9 +561,15 @@ const renderSpinner = function(parentEl) {
 };
 const showRecipe = async function() {
     try {
+        // use slice to remove # from the beginning of the id so that it can be added into url
+        const id = window.location.hash.slice(1);
+        console.log(id);
+        // returns page without id --> one liner, no need for useless nesting
+        if (!id) return;
         // loading recipe
         renderSpinner(recipeContainer);
-        const res = await fetch("https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bcc40");
+        // add ${id}
+        const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`);
         const data = await res.json();
         if (!res.ok) throw new Error(`${data.message} (${res.status})`);
         let recipe = data.data.recipe;
@@ -670,7 +676,13 @@ const showRecipe = async function() {
         recipeContainer.insertAdjacentHTML("afterbegin", markup);
     } catch (err) {}
 };
-showRecipe();
+// window.addEventListener('hashchange', showRecipe);
+// window.addEventListener('load', showRecipe);
+// alternative way of doing
+[
+    "hashchange",
+    "load"
+].forEach((ev)=>window.addEventListener(ev, showRecipe));
 
 },{"url:../img/icons.svg":"loVOp","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ"}],"loVOp":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("hWUTQ") + "icons.dfd7a6db.svg" + "?" + Date.now();
