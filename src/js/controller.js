@@ -23,6 +23,9 @@ const controlRecipes = async function () {
     if (!id) return;
     recipeView.renderSpinner();
 
+    // update results view to mark selected search results
+    resultsView.update(model.getSearchResultsPage());
+
     // loading recipe
     // async function --> will return promise --> await
     // not returning anything, gives us access to state.loadRecipe
@@ -62,7 +65,8 @@ const controlServings = function (newServings) {
   // update reciple servings - in state
   model.updateServings(newServings);
   // update recipe view
-  recipeView.render(model.state.recipe);
+  // recipeView.render(model.state.recipe);
+  recipeView.update(model.state.recipe);
 };
 
 const init = function() {

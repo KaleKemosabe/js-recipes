@@ -556,6 +556,8 @@ const controlRecipes = async function() {
         // returns page without id --> one liner, no need for useless nesting
         if (!id) return;
         (0, _recipeViewDefault.default).renderSpinner();
+        // update results view to mark selected search results
+        (0, _resultsViewDefault.default).update(_modelJs.getSearchResultsPage());
         // loading recipe
         // async function --> will return promise --> await
         // not returning anything, gives us access to state.loadRecipe
@@ -588,7 +590,8 @@ const controlServings = function(newServings) {
     // update reciple servings - in state
     _modelJs.updateServings(newServings);
     // update recipe view
-    (0, _recipeViewDefault.default).render(_modelJs.state.recipe);
+    // recipeView.render(model.state.recipe);
+    (0, _recipeViewDefault.default).update(_modelJs.state.recipe);
 };
 const init = function() {
     (0, _recipeViewDefault.default).addHandlerRender(controlRecipes);
@@ -2953,6 +2956,21 @@ class View {
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", markup);
     }
+    update(data) {
+        this._data = data;
+        const newMarkup = this._generateMarkup();
+        const newDOM = document.createRange().createContextualFragment(newMarkup);
+        // convert nodelist to array Array.from()
+        const newElements = Array.from(newDOM.querySelectorAll("*"));
+        const currentElements = Array.from(this._parentElement.querySelectorAll("*"));
+        newElements.forEach((newEl, i)=>{
+            const curEl = currentElements[i];
+            // use firstChild to return node
+            if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== "") curEl.textContent = newEl.textContent;
+            // update changed attributes
+            if (!newEl.isEqualNode(curEl)) Array.from(newEl.attributes).forEach((attr)=>curEl.setAttribute(attr.name, attr.value));
+        });
+    }
     _clear() {
         this._parentElement.innerHTML = "";
     }
@@ -3044,9 +3062,10 @@ class ResultsView extends (0, _viewDefault.default) {
         return this._data.map(this._generateMarkupPreview).join("");
     }
     _generateMarkupPreview(result) {
+        const id = window.location.hash.slice(1);
         return `
             <li class="preview">
-                <a class="preview__link" href="#${result.id}">
+                <a class="preview__link ${result.id === id ? "preview__link--active" : ""} " href="#${result.id}">
                 <figure class="preview__fig">
                     <img src="${result.image}" alt="${result.title}" />
                 </figure>
