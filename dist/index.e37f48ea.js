@@ -2472,7 +2472,7 @@ const loadSearchResults = async function(query) {
                 image: rec.image_url
             };
         });
-        console.log(state.search.results);
+        state.search.page = 1;
     } catch (err) {
         console.error(err);
         throw err;
@@ -3035,7 +3035,7 @@ class SearchView {
     }
     // addHandlerSearch method = publisher (controlSearchResults as a subscriber)
     addHandlerSearch(handler) {
-        // add event listener to entiry form (not only to button) - so that it works with both button/enter
+        // add event listener to entire form (not only to button) - so that it works with both button/enter
         // can't call submit directly - add preventDefault, otherwise page will reload
         this._parentEl.addEventListener("submit", function(e) {
             e.preventDefault();
@@ -3100,7 +3100,6 @@ class PaginationView extends (0, _viewDefault.default) {
     _generateMarkup() {
         const currentPage = this._data.page;
         const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
-        console.log(numPages);
         // page 1 and there are other pages
         if (currentPage === 1 && numPages > 1) return `
                 <button data-goto="${currentPage + 1}" class="btn--inline pagination__btn--next">

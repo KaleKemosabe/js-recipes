@@ -18,7 +18,7 @@ class SearchView {
 
     // addHandlerSearch method = publisher (controlSearchResults as a subscriber)
     addHandlerSearch(handler) {
-        // add event listener to entiry form (not only to button) - so that it works with both button/enter
+        // add event listener to entire form (not only to button) - so that it works with both button/enter
         // can't call submit directly - add preventDefault, otherwise page will reload
         this._parentEl.addEventListener('submit', function(e) {
             e.preventDefault();
