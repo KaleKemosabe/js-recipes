@@ -25,13 +25,15 @@ const controlRecipes = async function () {
 
     // update results view to mark selected search results
     resultsView.update(model.getSearchResultsPage());
+    
+    // update bookmarks view 
     bookmarksView.update(model.state.bookmarks);
 
     // loading recipe
     // async function --> will return promise --> await
     // not returning anything, gives us access to state.loadRecipe
     await model.loadRecipe(id);
-
+    
     // rendering recipe
     recipeView.render(model.state.recipe);
   } catch (err) {
@@ -82,7 +84,12 @@ const controlAddBookmark = function() {
   bookmarksView.render(model.state.bookmarks);
 }
 
+const controlBookmarks = function() {
+  bookmarksView.render(model.state.bookmarks);
+}
+
 const init = function() {
+  bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
   // pass in controlAddBookmark --> when click element, we add current recipe as bookmark
